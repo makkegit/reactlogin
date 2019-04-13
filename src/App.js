@@ -8,7 +8,10 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state ={
-      logins: []
+      logins: [],
+      email: null,
+      password: null,
+
     }
   }
 
@@ -44,7 +47,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         <div>id: {this.state.logins.id} </div>
         <div>email: {this.state.logins.email} </div> 
-        <div>data: {this.state.logins.accessToken} </div>
+        <div>accessToken: {this.state.logins.accessToken} </div>
         </header>
         
       </div>
