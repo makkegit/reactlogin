@@ -11,4 +11,4 @@ https://loginthing.herokuapp.com/
 
 ## Firebase data
 
-![image)(http://myy.haaga-helia.fi/~a1702673/pics/firebase.JPG)
+![image](http://myy.haaga-helia.fi/~a1702673/pics/firebase.JPG)
