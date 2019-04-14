@@ -93,7 +93,7 @@ class App extends Component {
         <header className="App-header">
         <div>eventdata: </div>
         <ReactJson theme="ocean" src={this.state.eventsData} />
-        <Button variant="primary" size="lg" onClick={this.getInfoWithToken} block>Click for magic! Data goes to firebase</Button>
+        <Button variant="primary" size="lg" onClick={this.getInfoWithToken} block>Click to update! Data goes to firebase</Button>
           <img src={logo} className="App-logo" alt="logo" />
         <div>id: {this.state.logins.id} </div>
         <div>email: {this.state.logins.email} </div> 
