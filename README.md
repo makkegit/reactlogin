@@ -8,3 +8,7 @@ https://loginthing.herokuapp.com/
 
 
 ![image](http://myy.haaga-helia.fi/~a1702673/pics/POST.JPG)
+
+## Firebase data
+
+![image)(http://myy.haaga-helia.fi/~a1702673/pics/firebase.JPG)
