@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 import ReactJson from 'react-json-view';
 import Button from 'react-bootstrap/Button';
 import firebase from 'firebase';
+import { Doughnut, defaults } from 'react-chartjs-2';
+import moment from 'moment';
+import cron from 'node-cron';
+
+defaults.global.maintainAspectRatio = false
 
 
 class App extends Component {
@@ -18,6 +22,7 @@ class App extends Component {
       eventsData: [],
 
     }
+    
     var config = {
       apiKey: "AIzaSyDqtCLRBAuHtctVy_kePjm-IzUi8X6Ma_E",
       authDomain: "sensorinfo-735d3.firebaseapp.com",
@@ -32,9 +37,11 @@ class App extends Component {
   componentDidMount() {
     this.getUserData();
     this.postLogin();
-    this.timer =  setInterval(() => this.getInfoWithToken(), 3600000);
-    
-  }
+    cron.schedule('* 1 * * *', () => {
+      console.log('Updating every hour');
+      this.getInfoWithToken();
+  });
+}
   componentDidUpdate(prevProps, prevState) {
     // check on previous state
     // only write when it's different with the new state
@@ -86,6 +93,59 @@ class App extends Component {
 
   
   render() {
+
+    const data = {
+      labels: [
+        'Sensor 1',
+        'Sensor 2',
+        'Sensor 3',
+        'Sensor 4',
+      ],
+      datasets: [{
+        data: [
+          this.state.eventsData.sensor1,
+          this.state.eventsData.sensor2,
+          this.state.eventsData.sensor3,
+          this.state.eventsData.sensor4,
+        ],
+        backgroundColor: [
+        '#FF6384',
+		    '#36A2EB',
+        '#FFCE56',
+        '#008000'
+        ],
+        hoverBackgroundColor: [
+          '#FF6384',
+          '#36A2EB',
+          '#FFCE56',
+          '#008000'
+        ]
+      }],  
+    };
+
+    const chartOptions = {
+      legend: {
+        position: 'top',
+        labels: {
+          text: 'test',
+          fontSize: 25,
+          fontColor: '#ffff'
+        },
+      },
+      layout: {
+        padding: {
+          left: 350,
+          right: 350,
+          top: 50,
+          bottom: 350,
+        },
+      },
+    };
+
+    var date = this.state.eventsData.date;
+    var parsedDate = moment(date);
+    var formattedDate = parsedDate.format('DD/MM/YYYY');
+   
     return (
       
       <div className="App">
@@ -94,10 +154,8 @@ class App extends Component {
         <div>eventdata: </div>
         <ReactJson theme="ocean" src={this.state.eventsData} />
         <Button variant="primary" size="lg" onClick={this.getInfoWithToken} block>Click to update! Data goes to firebase</Button>
-          <img src={logo} className="App-logo" alt="logo" />
-        <div>id: {this.state.logins.id} </div>
-        <div>email: {this.state.logins.email} </div> 
-        <div style={{fontSize: "20px"}}>accessToken: {this.state.logins.accessToken} </div>
+        <div padding-top='10%'>Today is: {formattedDate}</div>
+        <Doughnut options={chartOptions} data={data} ></Doughnut>
         </header>
       </div>
     );
