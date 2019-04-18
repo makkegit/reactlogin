@@ -37,7 +37,7 @@ class App extends Component {
   componentDidMount() {
     this.getUserData();
     this.postLogin();
-    cron.schedule('* 1 * * *', () => {
+    cron.schedule('0 * * * *', () => {
       console.log('Updating every hour');
       this.getInfoWithToken();
   });
