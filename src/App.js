@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
-import ReactJson from 'react-json-view';
-import Button from 'react-bootstrap/Button';
 import firebase from 'firebase';
 import { Doughnut, defaults } from 'react-chartjs-2';
 import moment from 'moment';
@@ -127,8 +125,7 @@ class App extends Component {
       legend: {
         position: 'top',
         labels: {
-          text: 'test',
-          fontSize: 25,
+          fontSize: 50,
           fontColor: '#ffff'
         },
       },
@@ -144,17 +141,14 @@ class App extends Component {
 
     var date = this.state.eventsData.date;
     var parsedDate = moment(date);
-    var formattedDate = parsedDate.format('DD/MM/YYYY');
+    var formattedDate = parsedDate.format('DD/MM/YYYY HH:MM');
    
     return (
       
       <div className="App">
       <div>testi email: {this.state.email}</div>
         <header className="App-header">
-        <div>eventdata: </div>
-        <ReactJson theme="ocean" src={this.state.eventsData} />
-        <Button variant="primary" size="lg" onClick={this.getInfoWithToken} block>Click to update! Data goes to firebase</Button>
-        <div padding-top='10%'>Today is: {formattedDate}</div>
+        <div padding-top='10%'>Last update: {formattedDate}</div>
         <Doughnut options={chartOptions} data={data} ></Doughnut>
         </header>
       </div>
