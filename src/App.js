@@ -157,7 +157,7 @@ class App extends Component {
       <div>testi email: {this.state.email}</div>
         <header className="App-header">
         <div padding-top='10%'>Last update: {formattedDate}</div>
-        <button onClick={this.getInfoWithToken}>Click for update</button>
+        <button onClick={this.getInfoWithToken}>Click to update</button>
         <div>Click on Sensors to hide/show data</div>
         <Doughnut options={chartOptions} data={data}></Doughnut>
         </header>
