@@ -6,8 +6,14 @@ import { Doughnut, defaults } from 'react-chartjs-2';
 import moment from 'moment';
 import cron from 'node-cron';
 
+
 defaults.global.maintainAspectRatio = false
 
+cron.schedule('0 * * * *', () => {
+  console.log('Updating every hour');
+  this.getInfoWithToken();
+  
+});
 
 class App extends Component {
   
@@ -31,14 +37,13 @@ class App extends Component {
     };
     firebase.initializeApp(config);
   }
+  
 
   componentDidMount() {
     this.getUserData();
     this.postLogin();
-    cron.schedule('0 * * * *', () => {
-      console.log('Updating every hour');
-      this.getInfoWithToken();
-  });
+    this.getInfoWithToken();
+    
 }
   componentDidUpdate(prevProps, prevState) {
     // check on previous state
@@ -46,6 +51,7 @@ class App extends Component {
     if (prevState !== this.state) {
       this.writeUserData();
     }
+
   }
   writeUserData = () => {
     firebase.database().ref('/').set(this.state);
@@ -72,8 +78,9 @@ class App extends Component {
         this.setState({
           logins: response.data,
           email: response.data.email,
-          accessToken: response.data.accessToken
+          accessToken: response.data.accessToken,
         })
+        console.log("got the data")
       }).catch((error) => {
         alert("There is an error in API call.");
       });
@@ -83,11 +90,12 @@ class App extends Component {
     axios.get("https://opendata.hopefully.works/api/events", {
       headers: { "Authorization" : `Bearer ${this.state.accessToken}` } })
       .then(res => {
-        console.log(res.data);
-      this.setState({
-        eventsData: res.data
-      })})
-  }
+        console.log(res.data)
+        this.setState({ 
+          eventsData: res.data
+        });
+      })};
+    
 
   
   render() {
@@ -149,7 +157,9 @@ class App extends Component {
       <div>testi email: {this.state.email}</div>
         <header className="App-header">
         <div padding-top='10%'>Last update: {formattedDate}</div>
-        <Doughnut options={chartOptions} data={data} ></Doughnut>
+        <button onClick={this.getInfoWithToken}>Click for update</button>
+        <div>Click on Sensors to hide/show data</div>
+        <Doughnut options={chartOptions} data={data}></Doughnut>
         </header>
       </div>
     );
