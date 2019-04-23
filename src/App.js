@@ -9,14 +9,27 @@ import cron from 'node-cron';
 
 defaults.global.maintainAspectRatio = false
 
+
 cron.schedule('0 * * * *', () => {
   console.log('Updating every hour');
   this.getInfoWithToken();
-  
 });
 
+
+var config = {
+  apiKey: "AIzaSyDqtCLRBAuHtctVy_kePjm-IzUi8X6Ma_E",
+  authDomain: "sensorinfo-735d3.firebaseapp.com",
+  databaseURL: "https://sensorinfo-735d3.firebaseio.com",
+  projectId: "sensorinfo-735d3",
+  storageBucket: "sensorinfo-735d3.appspot.com",
+  messagingSenderId: "403368641577"
+};
+firebase.initializeApp(config);
+
+
+
 class App extends Component {
-  
+
   constructor(props){
     super(props);   
     this.state ={
@@ -24,27 +37,37 @@ class App extends Component {
       email: "ei emailia", // no email default
       accessToken: null,
       eventsData: [],
-
+      allData:[]
     }
-    
-    var config = {
-      apiKey: "AIzaSyDqtCLRBAuHtctVy_kePjm-IzUi8X6Ma_E",
-      authDomain: "sensorinfo-735d3.firebaseapp.com",
-      databaseURL: "https://sensorinfo-735d3.firebaseio.com",
-      projectId: "sensorinfo-735d3",
-      storageBucket: "sensorinfo-735d3.appspot.com",
-      messagingSenderId: "403368641577"
-    };
-    firebase.initializeApp(config);
   }
   
+ 
 
   componentDidMount() {
     this.getUserData();
     this.postLogin();
     this.getInfoWithToken();
-    
+
+    const ref = firebase.database().ref('sensordata');
+    ref.on('value', (snapshot) => {
+      let items = snapshot.val();
+      let newState = [];
+      for (let item in items) {
+        newState.push({
+          id: item,
+          date: items[item].date,
+          sensor1: items[item].sensor1,
+          sensor2: items[item].sensor2,
+          sensor3: items[item].sensor3,
+          sensor4: items[item].sensor4,
+        });
+      }
+      this.setState({
+        allData: newState,
+      });
+    });
 }
+    
   componentDidUpdate(prevProps, prevState) {
     // check on previous state
     // only write when it's different with the new state
@@ -68,7 +91,6 @@ class App extends Component {
   }
 
   postLogin = () => {
-    
     axios.post("https://opendata.hopefully.works/api/login", { // api/signup for new users
         //test user 
         email: "testi123@testi123.fi", 
@@ -94,11 +116,23 @@ class App extends Component {
         this.setState({ 
           eventsData: res.data
         });
+        this.updateFirebase();
       })};
     
+updateFirebase = () => {
+  
+  const ref = firebase.database().ref('sensordata');
+  ref.push(this.state.eventsData);
+  console.log("saved to datas!")
+  
+  
+
+}
+
 
   
   render() {
+    
 
     const data = {
       labels: [
@@ -161,6 +195,20 @@ class App extends Component {
         <div>Click on Sensors to hide/show data</div>
         <Doughnut options={chartOptions} data={data}></Doughnut>
         </header>
+        <section className='display-item'>
+        <div className="wrapper"> History
+          {this.state.allData.map((item) => {
+            return (
+             <li key={item.id}>
+              <h3>Date: {item.date}</h3>
+              <h3>Sensor1: {item.sensor1}</h3>
+              <h3>Sensor2: {item.sensor2}</h3>
+              <h3>Sensor3: {item.sensor3}</h3>
+              <h3>Sensor4: {item.sensor4}</h3>
+              </li>)
+               })}
+        </div>
+        </section>
       </div>
     );
   };
